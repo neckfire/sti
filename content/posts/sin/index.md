@@ -2,7 +2,7 @@
 title: sciences informatique et numérique
 date: 6 october 2021
 ---
-voici tout les fichiers concernant cette matière :
+voici tout les fichiers concernant cette matière : (vérifiez bien en bas de la page, des fichiers s'y trouvent peut être...)
 ![](99.png)
 ![](98.png)
 ![](97.png)
@@ -103,4 +103,4 @@ voici tout les fichiers concernant cette matière :
 ![](2.png)
 ![](1.png)
 ![](0.png)
-https://stistlouis.netlify.app/posts/sin/Les MICRO CONTROLEURS à compléter STI2D I2D.doc
+- https://stistlouis.netlify.app/posts/sin/Les MICRO CONTROLEURS à compléter STI2D I2D.doc
