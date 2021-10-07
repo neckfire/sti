@@ -103,6 +103,6 @@ voici tout les fichiers concernant cette matière :
 ![](2.png)
 ![](1.png)
 ![](0.png)
-[a link](./3.pdf)
-[a link](./2.pdf)
-[a link](./1.pdf)
+./3.pdf
+./2.pdf
+./1.pdf
