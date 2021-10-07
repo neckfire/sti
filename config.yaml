@@ -1,0 +1,4 @@
+baseURL: "https://examplesite.com/"
+title: STI2D
+paginate: 15
+theme: PaperMod
