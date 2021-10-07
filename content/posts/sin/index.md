@@ -103,4 +103,4 @@ voici tout les fichiers concernant cette matière : (vérifiez bien en bas de la
 ![](2.png)
 ![](1.png)
 ![](0.png)
-- https://stistlouis.netlify.app/posts/sin/Les-MICRO-CONTROLEURS-à-compléter-STI2D-I2D.doc
+- https://stistlouis.netlify.app/posts/sin/microcontroleur.doc
