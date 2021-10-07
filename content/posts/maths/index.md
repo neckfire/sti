@@ -103,3 +103,6 @@ voici tout les fichiers concernant cette matière :
 ![](2.png)
 ![](1.png)
 ![](0.png)
+{{< embed-pdf url="./3.pdf" >}}
+{{< embed-pdf url="./2.pdf" >}}
+{{< embed-pdf url="./1.pdf" >}}
