@@ -1,4 +1,4 @@
-baseURL: "https://examplesite.com/"
+baseURL: "https://stistlouis.netlify.app/"
 title: STI2D
 paginate: 15
 theme: PaperMod
