@@ -103,6 +103,6 @@ voici tout les fichiers concernant cette matière :
 ![](2.png)
 ![](1.png)
 ![](0.png)
-./3.pdf
-./2.pdf
-./1.pdf
+https://stistlouis.netlify.app/3.pdf
+https://stistlouis.netlify.app/2.pdf
+https://stistlouis.netlify.app/1.pdf
