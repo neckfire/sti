@@ -9,8 +9,8 @@ params:
         subtitle: "PROJET CNC 2022-2023"
         imageUrl: "https://d2qc09rl1gfuof.cloudfront.net/product/DKJ3018PROJCK0001/cnc-3018-m100-1.2.jpg" # optional
         imageTitle: "CNC" # optional
-        imageWidth: 512 # custom size
-        imageHeight: 512 # custom size
+        imageWidth: 384 # custom size
+        imageHeight: 384 # custom size
         buttons:
             - name: presentation
               url: "/posts/cnc/"
