@@ -13,6 +13,6 @@ params:
         imageHeight: 120 # custom size
         buttons:
             - name: presentation
-              url: "/"
-            - name: Github
-              url: "https://github.com/"
+              url: "/cnc/"
+            #- name: Github
+            #  url: "https://github.com/"
