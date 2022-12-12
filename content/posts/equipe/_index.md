@@ -1,3 +1,3 @@
 ---
-title: Notre équipe
+title: Dev Log et notre équipe
 ---
