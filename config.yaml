@@ -14,5 +14,5 @@ params:
         buttons:
             - name: presentation
               url: "/posts/cnc/"
-            - name: Tarif
+            - name: Tarifs
               url: "https://docs.google.com/spreadsheets/d/1r5dBYsGRFHLVhhve1QFFlZsF-0hwlCjsHsESk7BJLjg/edit?usp=sharing"
