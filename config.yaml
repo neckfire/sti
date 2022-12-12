@@ -2,3 +2,17 @@ baseURL: "https://stistlouis.netlify.app/"
 title: STI2D
 paginate: 15
 theme: PaperMod
+params:
+    profileMode:
+        enabled: true
+        title: "STI2D" # optional default will be site title
+        subtitle: "PROJET CNC 2022-2023"
+        imageUrl: "https://d2qc09rl1gfuof.cloudfront.net/product/DKJ3018PROJCK0001/cnc-3018-m100-1.2.jpg" # optional
+        imageTitle: "CNC" # optional
+        imageWidth: 120 # custom size
+        imageHeight: 120 # custom size
+        buttons:
+            - name: presentation
+              url: "/"
+            - name: Github
+              url: "https://github.com/"
