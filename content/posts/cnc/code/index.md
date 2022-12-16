@@ -1,5 +1,5 @@
 ---
 title: Notre code
 ---
-{{< snippet "./unit2.pas" >}}
+{{< snippet "/posts/cnc/code/Unit2.pas" >}}
 
