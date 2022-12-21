@@ -4,13 +4,23 @@ interface
 
 uses 
   Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, ExtCtrls, TypInfo, Clipbrd, ComCtrls;
+  StdCtrls, ExtCtrls, TypInfo, Clipbrd, ComCtrls, LCLIntf;
 
 type
 
   { TFrame2 }
   TFrame2 = class(TFrame)
-    Button1: TButton;
+    center: TButton;
+    zedit: TEdit;
+    Z: TLabel;
+    Shape2: TShape;
+    Yoriginlabel: TLabel;
+    Xoriginlabel: TLabel;
+    xorigin: TEdit;
+    yorigin: TEdit;
+    GroupBox3: TGroupBox;
+    Image1: TImage;
+    loadfile: TButton;
     save: TButton;
     del: TButton;
     ok: TButton;
@@ -19,6 +29,8 @@ type
     Shape1: TShape;
     Edit1: TEdit;
     Edit2: TEdit;
+    TrackBar1: TTrackBar;
+    TrackBar2: TTrackBar;
     trou1: TPanel;
     trou2: TPanel;
     X: TLabel;
@@ -39,20 +51,24 @@ type
     Label4: TLabel;
     Label5: TLabel;
     ztrou1: TEdit;
+    procedure centerClick(Sender: TObject);
     procedure delClick(Sender: TObject);
+    procedure Image1Click(Sender: TObject);
     procedure validate(Sender: TObject);
+    procedure xbar(Sender: TObject);
+    procedure xoriginchange(Sender: TObject);
+    procedure ybar(Sender: TObject);
     procedure ychange(Sender: TObject);
     procedure xchange(Sender: TObject);
     procedure trou(Sender: TObject);
     procedure savefile(Sender: TObject);
     procedure readfile(sender: TObject);
+    procedure yoriginchange(Sender: TObject);
 
   private
     { Déclarations privées }
   public
     { Déclarations publiques }
-    //alternatively:
-    //constructor CreateFrom(srcObj: TMyObject);
 
   end;
 
@@ -78,6 +94,8 @@ end;
 
 procedure TFrame2.validate(Sender: TObject);
 begin
+   if(xtrou.Enabled=true) then
+   begin
      while(strtoint(xtroufin.Text)+strtoint(xtrou.Text)>shape1.Width div 2)do
      begin
           xtroufin.Text:=inttostr(strtoint(xtroufin.Text)-1);
@@ -99,30 +117,58 @@ begin
      trou1.height:=strtoint(ytroufin.Text) * 2;
      trou1.width:=strtoint(xtroufin.Text) * 2;
      trou1.caption:=ztrou.text;
-     if(xtrou1.Enabled=true) then
-     begin
-           while(strtoint(xtroufin1.Text)+strtoint(xtrou1.Text)>shape1.Width div 2)do
-           begin
+   end;
+   if(xtrou1.Enabled=true) then
+   begin
+       while(strtoint(xtroufin1.Text)+strtoint(xtrou1.Text)>shape1.Width div 2)do
+       begin
                 xtroufin1.Text:=inttostr(strtoint(xtroufin1.Text)-1);
                 while(strtoint(xtrou1.Text)>shape1.Width div 2)do
                 begin
                       xtrou1.Text:=inttostr(strtoint(xtrou1.Text)-1);
                 end;
-           end;
-           while(strtoint(ytroufin1.Text)+strtoint(ytrou1.Text)>shape1.height div 2)do
-           begin
+       end;
+       while(strtoint(ytroufin1.Text)+strtoint(ytrou1.Text)>shape1.height div 2)do
+       begin
                 ytroufin.Text:=inttostr(strtoint(ytroufin1.Text)-1);
                 while(strtoint(ytrou1.Text)>shape1.height div 2)do
                 begin
                       ytrou1.Text:=inttostr(strtoint(ytrou1.Text)-1);
                 end;
-           end;
+       end;
            trou2.top:=shape1.Top + strtoint(ytrou1.Text) * 2;
            trou2.left:=shape1.left + strtoint(xtrou1.Text) * 2;
            trou2.height:=strtoint(ytroufin1.Text) * 2;
            trou2.width:=strtoint(xtroufin1.Text) * 2;
            trou2.caption:=ztrou1.text;
      end;
+end;
+
+procedure TFrame2.xbar(Sender: TObject);
+begin
+  edit1.Text:=inttostr(Trackbar1.Position - strtoint(xorigin.Text));
+end;
+
+procedure TFrame2.xoriginchange(Sender: TObject);
+begin
+  if(xorigin.Text='') then
+        begin
+            xorigin.Text:=inttostr(0);
+        end;
+        if(strtoint(xorigin.Text)>250) then
+        begin
+            xorigin.Text:=inttostr(250);
+        end;
+  Trackbar1.Min:=strtoint(Xorigin.Text);
+  shape1.Left:=240 + strtoint(Xorigin.Text)*2;
+  Trackbar1.left:=230 + strtoint(Xorigin.Text)*2;
+  Trackbar1.Width:=560 - strtoint(Xorigin.Text)*2;
+  xbar(sender);
+end;
+
+procedure TFrame2.ybar(Sender: TObject);
+begin
+   edit2.Text:=inttostr(Trackbar2.Position - strtoint(yorigin.Text));
 end;
 
 procedure TFrame2.delClick(Sender: TObject);
@@ -159,6 +205,19 @@ begin
         del.enabled:=false;
      end;
 
+end;
+
+procedure TFrame2.centerClick(Sender: TObject);
+begin
+  xorigin.Text:=inttostr(135 div 2);
+  yorigin.Text:=inttostr(75 div 2);
+  trackbar1.Position:=135 + 135 div 2;
+  trackbar2.position:=75 + 75 div 2;
+end;
+
+procedure TFrame2.Image1Click(Sender: TObject);
+begin
+  OpenURL('https://stistlouis.netlify.app');
 end;
 
 procedure TFrame2.xchange(Sender: TObject);
@@ -217,6 +276,8 @@ end;
 procedure TFrame2.savefile(Sender: TObject);
 var
   MyText: TStringlist;
+  movx: integer;
+  movy: integer;
 begin
   MyText:= TStringlist.create;
   try
@@ -230,24 +291,51 @@ begin
    xtroufin1.text := StringReplace(xtroufin1.text, ' ', '', [rfReplaceAll]); //Remove spaces
    ytroufin1.text := StringReplace(ytroufin1.text, ' ', '', [rfReplaceAll]); //Remove spaces
    ztrou1.Text := StringReplace(ztrou1.Text, ' ', '', [rfReplaceAll]); //Remove spaces
+   xorigin.Text := StringReplace(xorigin.text, ' ', '', [rfReplaceAll]); //Remove spaces
+   yorigin.Text := StringReplace(yorigin.Text, ' ', '', [rfReplaceAll]); //Remove spaces
+   zedit.Text := StringReplace(zedit.Text, ' ', '', [rfReplaceAll]); //Remove spaces
 
    if(xtrou.Enabled=true) then
    begin
-    MyText.Add(xtrou.text);
-    MyText.Add(ytrou.text);
-    MyText.Add(xtroufin.text);
-    MyText.Add(ytroufin.text);
-    MyText.Add(ztrou.text);
+    //object
+    MyText.Add(xorigin.Text);
+    MyText.Add(yorigin.Text);
+    MyText.Add(zedit.Text);
+    //hole0
+    MyText.Add(xtrou.Text);
+    MyText.Add(ytrou.Text);
+    MyText.Add(ztrou.Text);
+    movx:=strtoint(xorigin.Text) + strtoint(xtroufin.Text);
+    MyText.Add(inttostr(movx));
+    movy:=strtoint(yorigin.text) + strtoint(ytroufin.Text);
+    MyText.Add(inttostr(movy));
+    movx:=movx - strtoint(xtroufin.Text);
+    MyText.Add(inttostr(movx));
+    movy:=movy - strtoint(ytroufin.Text);
+    MyText.Add(inttostr(movy));
+    MyText.Add('0'); //reset Z
    end;
-   if(xtrou1.Enabled=true) then
+   if(xtrou1.Enabled=true) then   //hole1
    begin
-    MyText.Add(xtrou1.text);
-    MyText.Add(ytrou1.text);
-    MyText.Add(xtroufin1.text);
-    MyText.Add(ytroufin1.text);
-    MyText.Add(ztrou1.text);
+    MyText.Add('---'); //distinc line to separate hole
+    MyText.Add(xorigin.Text);
+    MyText.Add(yorigin.Text);
+    MyText.Add(zedit.Text);
+    //hole
+    MyText.Add(xtrou1.Text);
+    MyText.Add(ytrou1.Text);
+    MyText.Add(ztrou1.Text);
+    movx:=strtoint(xorigin.Text) + strtoint(xtroufin1.Text);
+    MyText.Add(inttostr(movx));
+    movy:=strtoint(yorigin.Text) + strtoint(ytroufin1.Text);
+    MyText.Add(inttostr(movy));
+    movx:=movx - strtoint(xtroufin1.Text);
+    MyText.Add(inttostr(movx));
+    movy:=movy - strtoint(ytroufin1.Text);
+    MyText.Add(inttostr(movy));
+    MyText.Add('0'); //reset Z
    end;
-    MyText.Add('...');
+    MyText.Add('...');  //end the file
     MyText.SaveToFile('./test.txt');
   finally
     MyText.Free
@@ -275,47 +363,73 @@ begin
     //Writeln(s);
     if(i=1) then
     begin
-          xtrou.text:=s;
+          xorigin.text:=s;
     end;
     if(i=2)then
     begin
-          ytrou.text:=s;
+          yorigin.text:=s;
     end;
     if(i=3)then
     begin
-          xtroufin.text:=s;
+          zedit.text:=s;
     end;
     if(i=4)then
     begin
-          ytroufin.text:=s;
+          xtrou.text:=s;
     end;
     if(i=5)then
     begin
+          ytrou.text:=s;
+    end;
+    if(i=6)then
+    begin
           ztrou.text:=s;
     end;
+    if(i=7)then
+    begin
+          xtroufin.text:=inttostr(strtoint(s) - strtoint(xorigin.Text));
+    end;
+    if(i=8)then
+    begin
+          ytroufin.text:=inttostr(strtoint(s) - strtoint(yorigin.Text));
+    end;
+
     if(s='...')then
     begin
           Exit();
     end;
-    if(i=6)then
+
+    if(i=13) then
+    begin
+          xorigin.text:=s;
+    end;
+    if(i=14)then
+    begin
+          yorigin.text:=s;
+    end;
+    if(i=15)then
+    begin
+          zedit.text:=s;
+    end;
+    if(i=16)then
     begin
           xtrou1.text:=s;
     end;
-    if(i=7)then
+    if(i=17)then
     begin
           ytrou1.text:=s;
     end;
-    if(i=8)then
-    begin
-          xtroufin1.text:=s;
-    end;
-    if(i=9)then
-    begin
-          ytroufin1.text:=s;
-    end;
-    if(i=10)then
+    if(i=18)then
     begin
           ztrou1.text:=s;
+    end;
+    if(i=19)then
+    begin
+          xtroufin1.text:=inttostr(strtoint(s) - strtoint(xorigin.Text));
+    end;
+    if(i=20)then
+    begin
+          ytroufin1.text:=inttostr(strtoint(s) - strtoint(yorigin.Text));
     end;
 
     i:=i+1;
@@ -323,6 +437,23 @@ begin
   CloseFile(Txt);
   validate(Sender);
 
+end;
+
+procedure TFrame2.yoriginchange(Sender: TObject);
+begin
+  if(yorigin.Text='') then
+        begin
+            yorigin.Text:=inttostr(0);
+        end;
+        if(strtoint(yorigin.Text)>130) then
+        begin
+            yorigin.Text:=inttostr(130);
+        end;
+  Trackbar2.Min:=strtoint(yorigin.Text);
+  Shape1.Top:=152 + strtoint(yorigin.Text)*2;
+  Trackbar2.top:=120 + strtoint(Yorigin.Text)*2;
+  Trackbar2.Height:=344 - strtoint(Yorigin.Text)*2;
+  ybar(sender);
 end;
 
 end.
