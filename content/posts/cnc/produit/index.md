@@ -1,5 +1,5 @@
 ---
-title: C. liste de nos produits utilisés
+title: C. Liste de nos produits utilisés
 date: 03 december 2022
 ---
 nous allons donc remplacer certains composant de la CNC,
