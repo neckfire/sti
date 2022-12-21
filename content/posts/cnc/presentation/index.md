@@ -1,5 +1,5 @@
 ---
-title: Presentation de notre projet
+title: A. Presentation de notre projet
 date: 04 december 2022
 author: Marc, Axel
 ---
@@ -7,7 +7,7 @@ objectif :
  	
 Nous devons réaliser le programme de commande d’une fraiseuse avec CNC dans le but de remplacer la carte de commande d’origine.
 
-[![](./_Logigramme.png)](./Logigramme.png)
+[![](./_Logigramme.png)](./_Logigramme.png)
 
 Pour rappel, une fraiseuse est une machine-outil utilisée pour usiner tous types de pièces mécaniques, par enlèvement de matière à partir de blocs ou parfois d'ébauches estampées ou moulées, à l'aide d'un outil coupant nommé fraise.
 La CNC signifie seulement "computer numerical control" soit contrôle numérique par ordinateur.
