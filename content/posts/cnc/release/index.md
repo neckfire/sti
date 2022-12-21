@@ -1,4 +1,4 @@
 ---
-title: code release
+title: D. Telecharger le projet
 ---
 {{< shortlist path="/posts/cnc/release" type="zip">}}
