@@ -1,4 +1,4 @@
 ---
 title: D. Telecharger le projet
 ---
-{{< shortlist path="posts/cnc/release/" type="zip">}}
+{{< shortlist path="posts/cnc/release/">}}
