@@ -4,13 +4,22 @@ interface
 
 uses 
   Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, ExtCtrls, TypInfo, Clipbrd, ComCtrls, LCLIntf;
+  StdCtrls, ExtCtrls, TypInfo, Clipbrd, ComCtrls, LCLIntf, TAGraph;
 
 type
 
   { TFrame2 }
   TFrame2 = class(TFrame)
+    Button1: TButton;
+    pick: TButton;
+    delcircle: TButton;
+    circle: TButton;
     center: TButton;
+    Shape3: TShape;
+    xtrou2: TEdit;
+    xtroufin2: TEdit;
+    ytrou2: TEdit;
+    ytroufin2: TEdit;
     zedit: TEdit;
     Z: TLabel;
     Shape2: TShape;
@@ -51,9 +60,14 @@ type
     Label4: TLabel;
     Label5: TLabel;
     ztrou1: TEdit;
+    ztrou2: TEdit;
     procedure centerClick(Sender: TObject);
     procedure delClick(Sender: TObject);
+    procedure circledraw(Sender: TObject);
+    procedure delecircle(Sender: TObject);
     procedure Image1Click(Sender: TObject);
+    procedure pickonscreen2(Sender: TObject);
+    procedure startpick(Sender: TObject);
     procedure validate(Sender: TObject);
     procedure xbar(Sender: TObject);
     procedure xoriginchange(Sender: TObject);
@@ -69,7 +83,14 @@ type
     { Déclarations privées }
   public
     { Déclarations publiques }
-
+    var
+       Image: TImage;
+       onetime: integer;
+       CursorPos: TPoint;
+       placed: integer;
+       xpos: integer;
+       ypos: integer;
+       input: string;
   end;
 
 
@@ -94,6 +115,30 @@ end;
 
 procedure TFrame2.validate(Sender: TObject);
 begin
+   if(xtrou2.enabled=true)then
+   begin
+     while(strtoint(xtroufin2.Text)+strtoint(xtrou2.Text)>shape1.Width div 2)do
+     begin
+          xtroufin2.Text:=inttostr(strtoint(xtroufin2.Text)-1);
+          while(strtoint(xtrou2.Text)>shape1.Width div 2)do
+          begin
+               xtrou2.Text:=inttostr(strtoint(xtrou2.Text)-1);
+          end;
+     end;
+     while(strtoint(ytroufin2.Text)+strtoint(ytrou2.Text)>shape1.height div 2)do
+     begin
+          ytroufin2.Text:=inttostr(strtoint(ytroufin2.Text)-1);
+          while(strtoint(ytrou2.Text)>shape1.height div 2)do
+          begin
+               ytrou2.Text:=inttostr(strtoint(ytrou2.Text)-1);
+          end;
+     end;
+   shape3.top:=shape1.Top + strtoint(ytrou2.Text) * 2;
+   shape3.left:=shape1.left + strtoint(xtrou2.Text) * 2;
+   shape3.height:=strtoint(ytroufin2.Text) * 2;
+   shape3.width:=strtoint(xtroufin2.Text) * 2;
+   //shape3.caption:=ztrou2.text;  //don't work with this shape
+   end;
    if(xtrou.Enabled=true) then
    begin
      while(strtoint(xtroufin.Text)+strtoint(xtrou.Text)>shape1.Width div 2)do
@@ -192,6 +237,7 @@ begin
            new.Top:= new.Top-30;
            ok.Top:=ok.Top-30;
            del.Top:=del.top-30;
+           button1.top:=button1.top-30;
      end
      else
      begin
@@ -201,10 +247,86 @@ begin
         ytroufin.enabled:=false;
         ztrou.Enabled:=false;
         trou1.Visible:=false;
-        ok.enabled:=false;
+        //ok.enabled:=false;
         del.enabled:=false;
      end;
 
+end;
+
+procedure TFrame2.circledraw(Sender: TObject);
+var
+  placed: integer;
+begin
+  xtrou2.top := circle.top - 30;
+  ytrou2.top := circle.top - 30;
+  xtroufin2.top := circle.top - 30;
+  ytroufin2.top := circle.top - 30;
+  ztrou2.top := circle.top - 30;
+  xtrou2.enabled := true;
+  ytrou2.Enabled := true;
+  xtroufin2.enabled := true;
+  ytroufin2.enabled := true;
+  ztrou2.enabled := true;
+  circle.enabled := false;
+  delcircle.enabled := true;
+  showmessage('Now you can pick 2 points on the area' + #13#10 + 'Note: This pick will works only for the circular hole');
+  onetime:=0;
+  while(placed<>2)do
+  begin
+   while(onetime=0)do
+   begin
+        Application.ProcessMessages; //just waiting still the user pick 1 points
+        GetCursorPos(CursorPos);
+        xpos:= CursorPos.X;
+        ypos:= CursorPos.Y;
+        xtrou2.Text:=inttostr(xpos div 2 - shape1.Left div 2 - Groupbox2.Left div 2 - 5);
+        ytrou2.Text:=inttostr(ypos div 2 - shape1.Top div 2 - Groupbox2.Top div 2 - 33);
+        validate(Sender);
+   end;
+   xpos:= CursorPos.X;
+   ypos:= CursorPos.Y;
+   xtrou2.Text:=inttostr(xpos div 2 - shape1.Left div 2 - Groupbox2.Left div 2 - 5);
+   ytrou2.Text:=inttostr(ypos div 2 - shape1.Top div 2 - Groupbox2.Top div 2 - 33);
+   placed:=1;
+   while(onetime=1)do
+   begin
+        Application.ProcessMessages; //just waiting still the user pick 1 points
+        GetCursorPos(CursorPos);
+        xpos:= CursorPos.X;
+        ypos:= CursorPos.Y;
+        xtroufin2.Text:=inttostr(xpos div 2 - shape1.Left div 2 - Groupbox2.Left div 2 - 5 - strtoint(xtrou2.Text));
+        ytroufin2.Text:=inttostr(ypos div 2 - shape1.Top div 2 - Groupbox2.Top div 2 - 33 - strtoint(ytrou2.text));
+        validate(Sender);
+   end;
+   begin
+          xpos:= CursorPos.X;
+          ypos:= CursorPos.Y;
+          xtroufin2.Text:=inttostr(xpos div 2 - shape1.Left div 2 - Groupbox2.Left div 2 - 5 - strtoint(xtrou2.Text));
+          ytroufin2.Text:=inttostr(ypos div 2 - shape1.Top div 2 - Groupbox2.Top div 2 - 33 - strtoint(ytrou2.text));
+          placed:=2;
+   end;
+  end;
+  Input := InputBox('Depth', 'Depth of the hole :', '');
+  ztrou2.text:=Input;
+  placed:=0;
+  onetime:=0;
+  validate(Sender);
+end;
+
+procedure TFrame2.delecircle(Sender: TObject);
+begin
+  xtrou2.top := xtrou.top;
+  ytrou2.top := xtrou.top;
+  xtroufin2.top := xtrou.top;
+  ytroufin2.top := xtrou.top;
+  ztrou2.top := xtrou.top;
+  xtrou2.enabled := false;
+  ytrou2.Enabled := false;
+  xtroufin2.enabled := false;
+  ytroufin2.enabled := false;
+  ztrou2.enabled := false;
+  circle.enabled := true;
+  delcircle.enabled := false;
 end;
 
 procedure TFrame2.centerClick(Sender: TObject);
@@ -218,6 +340,106 @@ end;
 procedure TFrame2.Image1Click(Sender: TObject);
 begin
   OpenURL('https://stistlouis.netlify.app');
+end;
+
+procedure TFrame2.pickonscreen2(Sender: TObject);
+begin
+   GetCursorPos(CursorPos);
+   onetime:=onetime+1;
+end;
+
+procedure TFrame2.startpick(Sender: TObject);
+begin
+ if(xtrou1.enabled=false)then
+ begin
+  showmessage('Now you can pick 2 points on the area' + #13#10 + 'Note: This pick will works only for the first hole');
+  onetime:=0;
+  while(placed<>2)do
+  begin
+   while(onetime=0)do
+   begin
+        Application.ProcessMessages; //just waiting still the user pick 1 points
+        GetCursorPos(CursorPos);
+        xpos:= CursorPos.X;
+        ypos:= CursorPos.Y;
+        xtrou.Text:=inttostr(xpos div 2 - shape1.Left div 2 - Groupbox2.Left div 2 - 5);
+        ytrou.Text:=inttostr(ypos div 2 - shape1.Top div 2 - Groupbox2.Top div 2 - 33);
+        validate(Sender);
+   end;
+   xpos:= CursorPos.X;
+   ypos:= CursorPos.Y;
+   xtrou.Text:=inttostr(xpos div 2 - shape1.Left div 2 - Groupbox2.Left div 2 - 5);
+   ytrou.Text:=inttostr(ypos div 2 - shape1.Top div 2 - Groupbox2.Top div 2 - 33);
+   placed:=1;
+   while(onetime=1)do
+   begin
+        Application.ProcessMessages; //just waiting still the user pick 1 points
+        GetCursorPos(CursorPos);
+        xpos:= CursorPos.X;
+        ypos:= CursorPos.Y;
+        xtroufin.Text:=inttostr(xpos div 2 - shape1.Left div 2 - Groupbox2.Left div 2 - 5 - strtoint(xtrou.Text));
+        ytroufin.Text:=inttostr(ypos div 2 - shape1.Top div 2 - Groupbox2.Top div 2 - 33 - strtoint(ytrou.text));
+        validate(Sender);
+   end;
+   begin
+          xpos:= CursorPos.X;
+          ypos:= CursorPos.Y;
+          xtroufin.Text:=inttostr(xpos div 2 - shape1.Left div 2 - Groupbox2.Left div 2 - 5 - strtoint(xtrou.Text));
+          ytroufin.Text:=inttostr(ypos div 2 - shape1.Top div 2 - Groupbox2.Top div 2 - 33 - strtoint(ytrou.text));
+          placed:=2;
+   end;
+  end;
+  Input := InputBox('Depth', 'Depth of the hole :', '');
+  ztrou.text:=Input;
+  placed:=0;
+  onetime:=0;
+  validate(Sender);
+ end
+ else
+ begin
+  showmessage('Now you can pick 2 points on the area' + #13#10 + 'Note: This pick will works only for the second hole');
+  onetime:=0;
+  while(placed<>2)do
+  begin
+   while(onetime=0)do
+   begin
+        Application.ProcessMessages; //just waiting still the user pick 1 points
+        GetCursorPos(CursorPos);
+        xpos:= CursorPos.X;
+        ypos:= CursorPos.Y;
+        xtrou1.Text:=inttostr(xpos div 2 - shape1.Left div 2 - Groupbox2.Left div 2 - 5);
+        ytrou1.Text:=inttostr(ypos div 2 - shape1.Top div 2 - Groupbox2.Top div 2 - 33);
+        validate(Sender);
+   end;
+   xpos:= CursorPos.X;
+   ypos:= CursorPos.Y;
+   xtrou1.Text:=inttostr(xpos div 2 - shape1.Left div 2 - Groupbox2.Left div 2 - 5);
+   ytrou1.Text:=inttostr(ypos div 2 - shape1.Top div 2 - Groupbox2.Top div 2 - 33);
+   placed:=1;
+   while(onetime=1)do
+   begin
+        Application.ProcessMessages; //just waiting still the user pick 1 points
+        GetCursorPos(CursorPos);
+        xpos:= CursorPos.X;
+        ypos:= CursorPos.Y;
+        xtroufin1.Text:=inttostr(xpos div 2 - shape1.Left div 2 - Groupbox2.Left div 2 - 5 - strtoint(xtrou1.Text));
+        ytroufin1.Text:=inttostr(ypos div 2 - shape1.Top div 2 - Groupbox2.Top div 2 - 33 - strtoint(ytrou1.text));
+        validate(Sender);
+   end;
+   begin
+          xpos:= CursorPos.X;
+          ypos:= CursorPos.Y;
+          xtroufin1.Text:=inttostr(xpos div 2 - shape1.Left div 2 - Groupbox2.Left div 2 - 5 - strtoint(xtrou1.Text));
+          ytroufin1.Text:=inttostr(ypos div 2 - shape1.Top div 2 - Groupbox2.Top div 2 - 33 - strtoint(ytrou1.text));
+          placed:=2;
+   end;
+  end;
+  Input := InputBox('Depth', 'Depth of the hole :', '');
+  ztrou1.text:=Input;
+  placed:=0;
+  onetime:=0;
+  validate(Sender);
+ end;
 end;
 
 procedure TFrame2.xchange(Sender: TObject);
@@ -269,6 +491,7 @@ begin
          new.Top:= new.Top+30;
          ok.Top:=ok.Top+30;
          del.Top:=del.top+30;
+         button1.Top:=button1.top+30;
       end;
 
 end;
@@ -278,6 +501,7 @@ var
   MyText: TStringlist;
   movx: integer;
   movy: integer;
+  z: integer;
 begin
   MyText:= TStringlist.create;
   try
@@ -291,6 +515,11 @@ begin
    xtroufin1.text := StringReplace(xtroufin1.text, ' ', '', [rfReplaceAll]); //Remove spaces
    ytroufin1.text := StringReplace(ytroufin1.text, ' ', '', [rfReplaceAll]); //Remove spaces
    ztrou1.Text := StringReplace(ztrou1.Text, ' ', '', [rfReplaceAll]); //Remove spaces
+   xtrou2.text := StringReplace(xtrou2.text, ' ', '', [rfReplaceAll]); //Remove spaces
+   ytrou2.Text := StringReplace(ytrou2.Text, ' ', '', [rfReplaceAll]); //Remove spaces
+   xtroufin2.text := StringReplace(xtroufin2.text, ' ', '', [rfReplaceAll]); //Remove spaces
+   ytroufin2.text := StringReplace(ytroufin2.text, ' ', '', [rfReplaceAll]); //Remove spaces
+   ztrou2.text := StringReplace(ztrou2.text, ' ', '', [rfReplaceAll]); //Remove spaces
    xorigin.Text := StringReplace(xorigin.text, ' ', '', [rfReplaceAll]); //Remove spaces
    yorigin.Text := StringReplace(yorigin.Text, ' ', '', [rfReplaceAll]); //Remove spaces
    zedit.Text := StringReplace(zedit.Text, ' ', '', [rfReplaceAll]); //Remove spaces
@@ -304,10 +533,11 @@ begin
     //hole0
     MyText.Add(xtrou.Text);
     MyText.Add(ytrou.Text);
-    MyText.Add(ztrou.Text);
-    movx:=strtoint(xorigin.Text) + strtoint(xtroufin.Text);
+    z:=strtoint(zedit.Text) + strtoint(ztrou.Text);
+    MyText.Add(inttostr(z));
+    movx:=strtoint(xtrou.Text) + strtoint(xtroufin.Text);
     MyText.Add(inttostr(movx));
-    movy:=strtoint(yorigin.text) + strtoint(ytroufin.Text);
+    movy:=strtoint(ytrou.text) + strtoint(ytroufin.Text);
     MyText.Add(inttostr(movy));
     movx:=movx - strtoint(xtroufin.Text);
     MyText.Add(inttostr(movx));
@@ -324,14 +554,42 @@ begin
     //hole
     MyText.Add(xtrou1.Text);
     MyText.Add(ytrou1.Text);
-    MyText.Add(ztrou1.Text);
-    movx:=strtoint(xorigin.Text) + strtoint(xtroufin1.Text);
+    z:=strtoint(zedit.Text) + strtoint(ztrou1.Text);
+    MyText.Add(inttostr(z));
+    movx:=strtoint(xtrou1.Text) + strtoint(xtroufin1.Text);
     MyText.Add(inttostr(movx));
-    movy:=strtoint(yorigin.Text) + strtoint(ytroufin1.Text);
+    movy:=strtoint(ytrou1.Text) + strtoint(ytroufin1.Text);
     MyText.Add(inttostr(movy));
     movx:=movx - strtoint(xtroufin1.Text);
     MyText.Add(inttostr(movx));
     movy:=movy - strtoint(ytroufin1.Text);
+    MyText.Add(inttostr(movy));
+    MyText.Add('0'); //reset Z
+   end;
+   if(xtrou2.Enabled=true) then   //circle
+   begin
+    MyText.Add('+++'); //distinc line to separate hole
+    MyText.Add(xorigin.Text);
+    MyText.Add(yorigin.Text);
+    MyText.Add(zedit.Text);
+    //hole
+    MyText.Add(xtrou2.Text);
+    MyText.Add(ytrou2.Text);
+    z:=strtoint(zedit.Text) + strtoint(ztrou2.Text);
+    MyText.Add(inttostr(z));
+    //we are wroting data for a eliptic shape, to get a shorter code, we will
+    //write it as a rectangle ABCD, so the higest point in the left is on AC
+    //the higest point in the top is on AB, the higest on the right is on BD,
+    //and the higest in the down on CD
+    MyText.Add(xtrou2.text);
+    MyText.Add(ytrou2.text);
+    movx:=strtoint(xtrou2.text) + strtoint(xtroufin2.text);
+    MyText.Add(inttostr(movx));
+    movy:=strtoint(ytrou2.text) + strtoint(ytroufin2.text);
+    MyText.Add(inttostr(movy));
+    movx:=movx - strtoint(xtroufin2.text);
+    MyText.Add(inttostr(movx));
+    movy:=movy - strtoint(ytroufin2.text);
     MyText.Add(inttostr(movy));
     MyText.Add('0'); //reset Z
    end;
@@ -383,15 +641,15 @@ begin
     end;
     if(i=6)then
     begin
-          ztrou.text:=s;
+          ztrou.text:=inttostr(strtoint(s) - strtoint(zedit.text));
     end;
     if(i=7)then
     begin
-          xtroufin.text:=inttostr(strtoint(s) - strtoint(xorigin.Text));
+          xtroufin.text:=inttostr(strtoint(s) - strtoint(xtrou.Text));
     end;
     if(i=8)then
     begin
-          ytroufin.text:=inttostr(strtoint(s) - strtoint(yorigin.Text));
+         ytroufin.text:=inttostr(strtoint(s) - strtoint(ytrou.Text));
     end;
 
     if(s='...')then
@@ -421,15 +679,15 @@ begin
     end;
     if(i=18)then
     begin
-          ztrou1.text:=s;
+          ztrou1.text:=inttostr(strtoint(s) - strtoint(zedit.text));
     end;
     if(i=19)then
     begin
-          xtroufin1.text:=inttostr(strtoint(s) - strtoint(xorigin.Text));
+          xtroufin1.text:=inttostr(strtoint(s) - strtoint(xtrou1.Text));
     end;
     if(i=20)then
     begin
-          ytroufin1.text:=inttostr(strtoint(s) - strtoint(yorigin.Text));
+          ytroufin1.text:=inttostr(strtoint(s) - strtoint(ytrou1.Text));
     end;
 
     i:=i+1;
@@ -455,5 +713,6 @@ begin
   Trackbar2.Height:=344 - strtoint(Yorigin.Text)*2;
   ybar(sender);
 end;
+
 
 end.
