@@ -4,18 +4,26 @@ interface
 
 uses 
   Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, ExtCtrls, TypInfo, Clipbrd, ComCtrls, LCLIntf, TAGraph;
+  StdCtrls, ExtCtrls, TypInfo, Clipbrd, ComCtrls, LCLIntf, Buttons, TAGraph;
 
 type
 
   { TFrame2 }
   TFrame2 = class(TFrame)
     Button1: TButton;
+    ImageList1: TImageList;
+    Memo1: TMemo;
+    OpenDialog1: TOpenDialog;
     pick: TButton;
     delcircle: TButton;
     circle: TButton;
     center: TButton;
+    SelectDirectoryDialog1: TSelectDirectoryDialog;
     Shape3: TShape;
+    SpeedButton1: TSpeedButton;
+    SpeedButton2: TSpeedButton;
+    SpeedButton3: TSpeedButton;
+    SpeedButton4: TSpeedButton;
     xtrou2: TEdit;
     xtroufin2: TEdit;
     ytrou2: TEdit;
@@ -29,8 +37,6 @@ type
     yorigin: TEdit;
     GroupBox3: TGroupBox;
     Image1: TImage;
-    loadfile: TButton;
-    save: TButton;
     del: TButton;
     ok: TButton;
     GroupBox1: TGroupBox;
@@ -61,23 +67,25 @@ type
     Label5: TLabel;
     ztrou1: TEdit;
     ztrou2: TEdit;
-    procedure centerClick(Sender: TObject);
-    procedure delClick(Sender: TObject);
-    procedure circledraw(Sender: TObject);
-    procedure delecircle(Sender: TObject);
-    procedure Image1Click(Sender: TObject);
-    procedure pickonscreen2(Sender: TObject);
-    procedure startpick(Sender: TObject);
-    procedure validate(Sender: TObject);
-    procedure xbar(Sender: TObject);
-    procedure xoriginchange(Sender: TObject);
-    procedure ybar(Sender: TObject);
-    procedure ychange(Sender: TObject);
-    procedure xchange(Sender: TObject);
-    procedure trou(Sender: TObject);
-    procedure savefile(Sender: TObject);
-    procedure readfile(sender: TObject);
-    procedure yoriginchange(Sender: TObject);
+    procedure centerClick(Sender: TObject);   //center the shape
+    procedure close(Sender: TObject);
+    procedure delClick(Sender: TObject);      //delete a hole
+    procedure circledraw(Sender: TObject);    //draw a circle
+    procedure delecircle(Sender: TObject);    //delete a circle
+    procedure Image1Click(Sender: TObject);   //send to the site when clicking the logo
+    procedure newfile(Sender: TObject);
+    procedure pickonscreen2(Sender: TObject); //pick 2 points on the shape to make a hole
+    procedure startpick(Sender: TObject);     //manage the pickonscreen2 procedure
+    procedure validate(Sender: TObject);      //actualise the hole and the shape
+    procedure xbar(Sender: TObject);          //executed when changing the x progressbar value
+    procedure xoriginchange(Sender: TObject); //executed when changing the x origin edit
+    procedure ybar(Sender: TObject);          //executed when changing the y progressbar value
+    procedure ychange(Sender: TObject);       //executed when changing the y value of the shape
+    procedure xchange(Sender: TObject);       //executed when changing the x value of the shape
+    procedure trou(Sender: TObject);          //activate a new rectangular hole
+    procedure savefile(Sender: TObject);      //save settings to test.txt
+    procedure readfile(sender: TObject);      //read settings from test.txt
+    procedure yoriginchange(Sender: TObject); //executed when changing the y origin edit
 
   private
     { Déclarations privées }
@@ -337,9 +345,39 @@ begin
   trackbar2.position:=75 + 75 div 2;
 end;
 
+procedure TFrame2.close(Sender: TObject);
+begin
+  application.Terminate;
+end;
+
 procedure TFrame2.Image1Click(Sender: TObject);
 begin
   OpenURL('https://stistlouis.netlify.app');
+end;
+
+procedure TFrame2.newfile(Sender: TObject);
+begin
+   xorigin.text:='0';
+   yorigin.Text:='0';
+   zedit.text:='0';
+   xtrou.text:='0';
+   ytrou.text:='0';
+   ztrou.text:='0';
+   xtrou1.text:='0';
+   ytrou1.text:='0';
+   ztrou1.text:='0';
+   xtrou2.text:='0';
+   ytrou2.text:='0';
+   ztrou2.text:='0';
+   xtroufin1.text:='0';
+   ytroufin1.text:='0';
+   xtroufin.text:='0';
+   ytroufin.text:='0';
+   xtroufin2.text:='0';
+   ytroufin2.text:='0';
+   Trackbar1.Position:=Trackbar1.Max;
+   Trackbar2.Position:=Trackbar2.Max;
+   validate(sender);
 end;
 
 procedure TFrame2.pickonscreen2(Sender: TObject);
@@ -530,6 +568,8 @@ begin
     MyText.Add(xorigin.Text);
     MyText.Add(yorigin.Text);
     MyText.Add(zedit.Text);
+    MyText.Add(inttostr(trackbar1.Position));
+    MyText.Add(inttostr(trackbar2.Position));
     //hole0
     MyText.Add(xtrou.Text);
     MyText.Add(ytrou.Text);
@@ -544,27 +584,61 @@ begin
     movy:=movy - strtoint(ytroufin.Text);
     MyText.Add(inttostr(movy));
     MyText.Add('0'); //reset Z
+   end
+   else
+   begin
+      MyText.Add('0');
+      MyText.Add('0');
+      MyText.Add('0');
+      MyText.Add('0');
+      MyText.Add('0');
+      MyText.Add('0');
+      MyText.Add('0');
+      MyText.Add('0');
+      MyText.Add('0');
+      MyText.Add('0');
+      MyText.Add('0');
+      MyText.Add('0');
+      MyText.Add('0');
    end;
    if(xtrou1.Enabled=true) then   //hole1
    begin
-    MyText.Add('---'); //distinc line to separate hole
-    MyText.Add(xorigin.Text);
-    MyText.Add(yorigin.Text);
-    MyText.Add(zedit.Text);
+    MyText.Add('---'); //distinc line to separate hole, represented as a rectangle ABCD
+    MyText.Add(xorigin.Text);                                //xorigin
+    MyText.Add(yorigin.Text);                                //yorigin
+    MyText.Add(zedit.Text);                                  //zobject
+    MyText.Add(inttostr(trackbar1.Position));
+    MyText.Add(inttostr(trackbar2.Position));
     //hole
-    MyText.Add(xtrou1.Text);
-    MyText.Add(ytrou1.Text);
-    z:=strtoint(zedit.Text) + strtoint(ztrou1.Text);
+    MyText.Add(xtrou1.Text);                                 //point A (x)
+    MyText.Add(ytrou1.Text);                                 //point A (y)
+    z:=strtoint(zedit.Text) + strtoint(ztrou1.Text);         //point A (z)
     MyText.Add(inttostr(z));
-    movx:=strtoint(xtrou1.Text) + strtoint(xtroufin1.Text);
+    movx:=strtoint(xtrou1.Text) + strtoint(xtroufin1.Text);  //point B(x)
     MyText.Add(inttostr(movx));
-    movy:=strtoint(ytrou1.Text) + strtoint(ytroufin1.Text);
+    movy:=strtoint(ytrou1.Text) + strtoint(ytroufin1.Text);  //point D (y)
     MyText.Add(inttostr(movy));
-    movx:=movx - strtoint(xtroufin1.Text);
+    movx:=movx - strtoint(xtroufin1.Text);                   //point C (x)
     MyText.Add(inttostr(movx));
-    movy:=movy - strtoint(ytroufin1.Text);
+    movy:=movy - strtoint(ytroufin1.Text);                   //point A (y)
     MyText.Add(inttostr(movy));
-    MyText.Add('0'); //reset Z
+    MyText.Add('0'); //reset Z                               //point A (z)
+   end
+   else
+   begin
+      MyText.Add('---');
+      MyText.Add('0');
+      MyText.Add('0');
+      MyText.Add('0');
+      MyText.Add('0');
+      MyText.Add('0');
+      MyText.Add('0');
+      MyText.Add('0');
+      MyText.Add('0');
+      MyText.Add('0');
+      MyText.Add('0');
+      MyText.Add('0');
+      MyText.Add('0');
    end;
    if(xtrou2.Enabled=true) then   //circle
    begin
@@ -572,6 +646,8 @@ begin
     MyText.Add(xorigin.Text);
     MyText.Add(yorigin.Text);
     MyText.Add(zedit.Text);
+    MyText.Add(inttostr(trackbar1.Position));
+    MyText.Add(inttostr(trackbar2.Position));
     //hole
     MyText.Add(xtrou2.Text);
     MyText.Add(ytrou2.Text);
@@ -592,13 +668,49 @@ begin
     movy:=movy - strtoint(ytroufin2.text);
     MyText.Add(inttostr(movy));
     MyText.Add('0'); //reset Z
+   end
+   else
+   begin
+      MyText.Add('---');
+      MyText.Add('0');
+      MyText.Add('0');
+      MyText.Add('0');
+      MyText.Add('0');
+      MyText.Add('0');
+      MyText.Add('0');
+      MyText.Add('0');
+      MyText.Add('0');
+      MyText.Add('0');
+      MyText.Add('0');
+      MyText.Add('0');
+      MyText.Add('0');
    end;
     MyText.Add('...');  //end the file
-    MyText.SaveToFile('./test.txt');
+
+    with SelectDirectoryDialog1.Create(nil) do
+    try
+       if Execute then
+       begin
+           if (filename = '')then
+           begin
+              filename:= '.';
+           end;
+           Input := InputBox('Filename', 'Chose a filename for the file :', '');
+           if(input='')then
+           begin
+              Input:='data';
+           end;
+           MyText.SaveToFile(filename + '/' + Input + '.sti2d');
+         end;
+       finally
+         Free;
+       end;
+
   finally
     MyText.Free
   end; {try}
 end;
+
 
 procedure TFrame2.readfile(sender: TObject);
 var
@@ -606,17 +718,22 @@ var
   s: string;
   AllText: string;
   i: integer;
-
+  filename: string;
+  l: integer;
 begin
-  AllText := '';
-  AssignFile(Txt, './test.txt');
+ AllText := '';
+ if OpenDialog1.execute then
+ begin
+  filename := OpenDialog1.Filename;
+  AssignFile(Txt, filename);
   Reset(Txt);
   i:=1;
+  l:=0;
   while not Eof(Txt) do
   begin
     Readln(Txt, s);
+    l:=l+1;
     AllText := AllText + s;
-
     // Write out each line; comment out to stop.
     //Writeln(s);
     if(i=1) then
@@ -633,21 +750,29 @@ begin
     end;
     if(i=4)then
     begin
-          xtrou.text:=s;
+          trackbar1.Position:=strtoint(s);
     end;
     if(i=5)then
     begin
-          ytrou.text:=s;
+          trackbar2.Position:=strtoint(s);
     end;
     if(i=6)then
     begin
-          ztrou.text:=inttostr(strtoint(s) - strtoint(zedit.text));
+          xtrou.text:=s;
     end;
     if(i=7)then
     begin
-          xtroufin.text:=inttostr(strtoint(s) - strtoint(xtrou.Text));
+          ytrou.text:=s;
     end;
     if(i=8)then
+    begin
+          ztrou.text:=inttostr(strtoint(s) - strtoint(zedit.text));
+    end;
+    if(i=9)then
+    begin
+          xtroufin.text:=inttostr(strtoint(s) - strtoint(xtrou.Text));
+    end;
+    if(i=10)then
     begin
          ytroufin.text:=inttostr(strtoint(s) - strtoint(ytrou.Text));
     end;
@@ -657,43 +782,108 @@ begin
           Exit();
     end;
 
-    if(i=13) then
+    if(i=15) then
     begin
           xorigin.text:=s;
     end;
-    if(i=14)then
+    if(i=16)then
     begin
           yorigin.text:=s;
     end;
-    if(i=15)then
+    if(i=17)then
     begin
           zedit.text:=s;
     end;
-    if(i=16)then
-    begin
-          xtrou1.text:=s;
-    end;
-    if(i=17)then
-    begin
-          ytrou1.text:=s;
-    end;
     if(i=18)then
     begin
-          ztrou1.text:=inttostr(strtoint(s) - strtoint(zedit.text));
+          trackbar1.Position:=strtoint(s);
     end;
     if(i=19)then
     begin
-          xtroufin1.text:=inttostr(strtoint(s) - strtoint(xtrou1.Text));
+          trackbar2.Position:=strtoint(s);
     end;
     if(i=20)then
     begin
+          xtrou1.text:=s;
+    end;
+    if(i=21)then
+    begin
+          ytrou1.text:=s;
+    end;
+    if(i=22)then
+    begin
+          ztrou1.text:=inttostr(strtoint(s) - strtoint(zedit.text));
+    end;
+    if(i=23)then
+    begin
+          xtroufin1.text:=inttostr(strtoint(s) - strtoint(xtrou1.Text));
+    end;
+    if(i=24)then
+    begin
           ytroufin1.text:=inttostr(strtoint(s) - strtoint(ytrou1.Text));
+    end;
+    if(s='+++')then
+    begin
+     xtrou2.top := circle.top - 30;
+     ytrou2.top := circle.top - 30;
+     xtroufin2.top := circle.top - 30;
+     ytroufin2.top := circle.top - 30;
+     ztrou2.top := circle.top - 30;
+     xtrou2.enabled := true;
+     ytrou2.Enabled := true;
+     xtroufin2.enabled := true;
+     ytroufin2.enabled := true;
+     ztrou2.enabled := true;
+     circle.enabled := false;
+     delcircle.enabled := true;
+    end;
+    if(i=29) then
+    begin
+          xorigin.text:=s;
+    end;
+    if(i=30)then
+    begin
+          yorigin.text:=s;
+    end;
+    if(i=31)then
+    begin
+          zedit.text:=s;
+    end;
+    if(i=32)then
+    begin
+          trackbar1.Position:=strtoint(s);
+    end;
+    if(i=33)then
+    begin
+          trackbar2.Position:=strtoint(s);
+    end;
+    if(i=34)then
+    begin
+          xtrou2.text:=s;
+    end;
+    if(i=35)then
+    begin
+          ytrou2.text:=s;
+    end;
+    if(i=36)then
+    begin
+          ztrou2.text:=inttostr(strtoint(s) - strtoint(zedit.text));
+    end;
+    if(i=37)then
+    begin
+          xtroufin2.text:=inttostr(strtoint(s) - strtoint(xtrou2.Text));
+    end;
+    if(i=38)then
+    begin
+          ytroufin2.text:=inttostr(strtoint(s) - strtoint(ytrou2.Text));
     end;
 
     i:=i+1;
   end;
   CloseFile(Txt);
+  memo1.Lines.Add(alltext);
   validate(Sender);
+end;
 
 end;
 
