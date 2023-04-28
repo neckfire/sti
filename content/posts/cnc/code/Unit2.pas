@@ -2,80 +2,111 @@ unit Unit2;
 
 interface
 
-uses 
-  Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, ExtCtrls, TypInfo, Clipbrd, ComCtrls, LCLIntf, Buttons, TAGraph;
+uses
+  Messages, SysUtils, Classes, process, Graphics, Controls, Forms, Dialogs,
+  StdCtrls, ExtCtrls, TypInfo, Clipbrd, ComCtrls, LCLIntf, Buttons, Menus,
+  LazSerial, TAGraph, Serial;
 
 type
 
   { TFrame2 }
   TFrame2 = class(TFrame)
     Button1: TButton;
-    ImageList1: TImageList;
-    Memo1: TMemo;
-    OpenDialog1: TOpenDialog;
-    pick: TButton;
-    delcircle: TButton;
-    circle: TButton;
+    Button2: TButton;
+    Button3: TButton;
+    Button4: TButton;
+    Button5: TButton;
+    Button6: TButton;
+    Button7: TButton;
+    Button8: TButton;
+    CLEAR: TButton;
     center: TButton;
+    circle: TButton;
+    del: TButton;
+    delcircle: TButton;
+    Edit1: TEdit;
+    Edit2: TEdit;
+    positiononx: TEdit;
+    positionony: TEdit;
+    positiononz: TEdit;
+    ONOFF: TEdit;
+    GroupBox1: TGroupBox;
+    GroupBox2: TGroupBox;
+    GroupBox3: TGroupBox;
+    GroupBox4: TGroupBox;
+    Image1: TImage;
+    Shape4: TImage;
+    ImageList1: TImageList;
+    Label1: TLabel;
+    Label2: TLabel;
+    Label3: TLabel;
+    Label4: TLabel;
+    Label5: TLabel;
+    LazCom: TLazSerial;
+    Memo1: TMemo;
+    Memo2: TMemo;
+    new: TButton;
+    ok: TButton;
+    OpenDialog1: TOpenDialog;
+    PageControl1: TPageControl;
+    Panel1: TPanel;
+    pick: TButton;
     SelectDirectoryDialog1: TSelectDirectoryDialog;
+    Shape1: TShape;
+    Shape2: TShape;
     Shape3: TShape;
     SpeedButton1: TSpeedButton;
     SpeedButton2: TSpeedButton;
     SpeedButton3: TSpeedButton;
     SpeedButton4: TSpeedButton;
-    xtrou2: TEdit;
-    xtroufin2: TEdit;
-    ytrou2: TEdit;
-    ytroufin2: TEdit;
-    zedit: TEdit;
-    Z: TLabel;
-    Shape2: TShape;
-    Yoriginlabel: TLabel;
-    Xoriginlabel: TLabel;
-    xorigin: TEdit;
-    yorigin: TEdit;
-    GroupBox3: TGroupBox;
-    Image1: TImage;
-    del: TButton;
-    ok: TButton;
-    GroupBox1: TGroupBox;
-    GroupBox2: TGroupBox;
-    Shape1: TShape;
-    Edit1: TEdit;
-    Edit2: TEdit;
+    TabSheet1: TTabSheet;
+    TabSheet2: TTabSheet;
+    TabSheet3: TTabSheet;
+    ToggleBox1: TToggleBox;
+    ToggleBox2: TToggleBox;
     TrackBar1: TTrackBar;
     TrackBar2: TTrackBar;
     trou1: TPanel;
     trou2: TPanel;
     X: TLabel;
-    xtrou1: TEdit;
-    xtroufin1: TEdit;
-    Y: TLabel;
-    new: TButton;
+    xorigin: TEdit;
+    Xoriginlabel: TLabel;
     xtrou: TEdit;
-    Label1: TLabel;
-    Label2: TLabel;
-    ytrou: TEdit;
+    xtrou1: TEdit;
+    xtrou2: TEdit;
     xtroufin: TEdit;
+    xtroufin1: TEdit;
+    xtroufin2: TEdit;
+    Y: TLabel;
+    yorigin: TEdit;
+    Yoriginlabel: TLabel;
+    ytrou: TEdit;
     ytrou1: TEdit;
+    ytrou2: TEdit;
     ytroufin: TEdit;
     ytroufin1: TEdit;
+    ytroufin2: TEdit;
+    Z: TLabel;
+    zedit: TEdit;
     ztrou: TEdit;
-    Label3: TLabel;
-    Label4: TLabel;
-    Label5: TLabel;
     ztrou1: TEdit;
     ztrou2: TEdit;
+    procedure ButtonClick(Sender: TObject);
     procedure centerClick(Sender: TObject);   //center the shape
+    procedure clearcanva(Sender: TObject);
     procedure close(Sender: TObject);
     procedure delClick(Sender: TObject);      //delete a hole
     procedure circledraw(Sender: TObject);    //draw a circle
     procedure delecircle(Sender: TObject);    //delete a circle
     procedure Image1Click(Sender: TObject);   //send to the site when clicking the logo
+    procedure LazComRxData(Sender: TObject);
     procedure newfile(Sender: TObject);
     procedure pickonscreen2(Sender: TObject); //pick 2 points on the shape to make a hole
     procedure startpick(Sender: TObject);     //manage the pickonscreen2 procedure
+    procedure TabSheet3Show(Sender: TObject);
+    procedure Test(Sender: TObject);
+    procedure ToggleBox1Click(Sender: TObject);
+    procedure ToggleBox2Change(Sender: TObject);
     procedure validate(Sender: TObject);      //actualise the hole and the shape
     procedure xbar(Sender: TObject);          //executed when changing the x progressbar value
     procedure xoriginchange(Sender: TObject); //executed when changing the x origin edit
@@ -99,12 +130,18 @@ type
        xpos: integer;
        ypos: integer;
        input: string;
+       positionx: integer;
+       positiony: integer;
+       xhere, yhere, zhere: integer;
+
   end;
 
 
 implementation
 
 {$R *.dfm}
+
+
 
 procedure TFrame2.ychange(Sender: TObject);
 begin
@@ -345,6 +382,94 @@ begin
   trackbar2.position:=75 + 75 div 2;
 end;
 
+procedure TFrame2.clearcanva(Sender: TObject);
+begin
+  Shape4.Canvas.Clear;
+  Shape4.Canvas.Pen.Width:=5;
+  Shape4.Canvas.pen.Color:=clWhite;
+  Shape4.Canvas.Rectangle(0,0,Shape4.Width,Shape4.Height);
+  Shape4.Canvas.pen.Color:=clBlack;
+  Button2.Enabled:=true;
+  Button3.Enabled:=true;
+  Button4.Enabled:=true;
+  Button5.Enabled:=true;
+  ToggleBox2.Enabled:=true;
+  Button6.Enabled:=true;
+  Button7.Enabled:=true;
+  Button8.Enabled:=false;
+  xhere:=0;
+  yhere:=0;
+  zhere:=40;
+end;
+
+
+procedure TFrame2.ButtonClick(Sender: TObject);
+var
+  dx, dy, dz: integer;
+begin
+  // Determine the direction of the line based on the button that was clicked
+
+  case (Sender as TButton).Tag of
+    1: begin // Up
+         dx := 0;
+         dy := -5;
+       end;
+    2: begin // Down
+         dx := 0;
+         dy := 5;
+       end;
+    3: begin // Left
+         dx := -5;
+         dy := 0;
+
+       end;
+    4: begin // Right
+         dx := 5;
+         dy := 0;
+
+       end;
+    5: begin // upside
+         dz := 5;
+       end;
+    6: begin // downside
+         dz := -5
+       end;
+  end;
+  // Draw the line on Shape4
+  //Shape4.Canvas.Pen.Width:=round((zhere+dz) div 10);
+  if (xhere=0) and (dx=-5) then
+     dx:=0;
+  if (yhere=0) and (dy=-5) then
+     dy:=0;
+  if (xhere=270) and (dx=5) then
+     dx:=0;
+  if (yhere=150) and (dy=5) then
+     dy:=0;
+  if not(dx = 0) then
+  begin
+       lazcom.WriteData('x');
+       lazcom.WriteData(',');
+       lazcom.WriteData(inttostr(dx));
+       lazcom.WriteData(',');
+  end;
+  if not(dy = 0) then
+  begin
+       lazcom.WriteData('y');
+       lazcom.WriteData(',');
+       lazcom.WriteData(inttostr(dy));
+       lazcom.WriteData(',');
+  end;
+
+  Shape4.Canvas.Line(xhere*2,yhere*2,xhere*2+dx*2, yhere*2+dy*2);
+  xhere:=xhere+dx;
+  yhere:=yhere+dy;
+  zhere:=zhere+dz;
+  positiononx.Text:=inttostr(xhere);
+  positionony.Text:=inttostr(yhere);
+  positiononz.Text:=inttostr(zhere);
+end;
+
+
 procedure TFrame2.close(Sender: TObject);
 begin
   application.Terminate;
@@ -353,6 +478,22 @@ end;
 procedure TFrame2.Image1Click(Sender: TObject);
 begin
   OpenURL('https://stistlouis.netlify.app');
+end;
+
+procedure TFrame2.LazComRxData(Sender: TObject);
+var
+    Temp : String;
+     Proc: TProcess;
+    Temp2: string;
+begin
+   if LazCom.DataAvailable then
+   begin
+       Temp := LazCom.ReadData ;
+       Memo2.text := Memo2.text+Temp;
+       //Memo2.Lines.Add('');
+       //Label1.caption:=Temp;
+
+   end;
 end;
 
 procedure TFrame2.newfile(Sender: TObject);
@@ -478,6 +619,82 @@ begin
   onetime:=0;
   validate(Sender);
  end;
+end;
+
+procedure TFrame2.TabSheet3Show(Sender: TObject);
+begin
+   //positiononx:=Shape4.Left;
+   //positionony:=Shape4.Top;
+end;
+
+procedure TFrame2.Test(Sender: TObject);
+begin
+  Shape4.Canvas.Pen.Width:=5;
+  Shape4.Canvas.pen.Color:=clWhite;
+  Shape4.Canvas.Rectangle(0,0,Shape4.Width,Shape4.Height);
+  Shape4.Canvas.pen.Color:=clBlack;
+  Button2.Enabled:=true;
+  Button3.Enabled:=true;
+  Button4.Enabled:=true;
+  Button5.Enabled:=true;
+  ToggleBox2.Enabled:=true;
+  Button6.Enabled:=true;
+  Button7.Enabled:=true;
+  Button8.Enabled:=false;
+  xhere:=0;
+  yhere:=0;
+  zhere:=40;
+  lazcom.ShowSetupDialog;
+  lazcom.Active:=true;
+  Lazcom.Open;
+end;
+
+
+  //TShape1.Canvas.MoveTo(TShape1.Left, TShape1.Top); // start at the current position
+  //TShape1.Canvas.LineTo(TShape1.Left + 10, TShape1.Top); // draw a line to the new position
+
+procedure TFrame2.ToggleBox1Click(Sender: TObject);
+var
+  Txt: TextFile;
+  s: string;
+  AllText: string;
+  i: integer;
+  filename: string;
+  l: integer;
+begin
+  AllText := '';
+ if OpenDialog1.execute then
+ begin
+  filename := OpenDialog1.Filename;
+  AssignFile(Txt, filename);
+  Reset(Txt);
+  i:=1;
+  l:=0;
+  while not Eof(Txt) do
+  begin
+    Readln(Txt, s);
+    l:=l+1;
+    AllText := AllText + s;
+    // Write out each line; comment out to stop.
+    //Writeln(s);
+    Lazcom.WriteData(s);
+    Lazcom.WriteData(',');
+    i:=i+1;
+  end;
+  CloseFile(Txt);
+  memo2.Lines.Add(alltext);
+end;
+
+end;
+
+procedure TFrame2.ToggleBox2Change(Sender: TObject);
+begin
+ if ToggleBox2.Checked = true then
+ begin
+  ONOFF.Text:='True';
+ end
+ else
+  ONOFF.Text:='False';
 end;
 
 procedure TFrame2.xchange(Sender: TObject);
@@ -710,7 +927,6 @@ begin
     MyText.Free
   end; {try}
 end;
-
 
 procedure TFrame2.readfile(sender: TObject);
 var
