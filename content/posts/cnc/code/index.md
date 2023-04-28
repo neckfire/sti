@@ -17,7 +17,7 @@ Project1.lpi
 {{< snippet "/posts/cnc/code/Project1.lpi" >}}
 
 Unit2.dfm
-{{< snippet "/posts/cnc/code/Unit2.dfm" >}}
+[cliquez ici pour voir](/posts/cnc/code/Unit2.dfm)
 
 Unit2.lrs
 {{< snippet "/posts/cnc/code/Unit2.lrs" >}}
