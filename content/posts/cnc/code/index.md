@@ -2,6 +2,8 @@
 title: B. Notre code
 ---
 Ici ce trouve notre code utilisé dans notre projet.
+Ci-dessous celui utilisé dans l'arduino :
+{{< snippet "/posts/cnc/code/code_arduino/test_code_chat_GPT.ino" >}}
 
 Ci-dessous celui utilisé dans lazarus/delphi: 
 Unit1.pas
