@@ -19,6 +19,7 @@ type
     Button6: TButton;
     Button7: TButton;
     Button8: TButton;
+    Button9: TButton;
     CLEAR: TButton;
     center: TButton;
     circle: TButton;
@@ -26,6 +27,9 @@ type
     delcircle: TButton;
     Edit1: TEdit;
     Edit2: TEdit;
+    Edit3: TEdit;
+    Panel2: TPanel;
+    Panel3: TPanel;
     positiononx: TEdit;
     positionony: TEdit;
     positiononz: TEdit;
@@ -35,6 +39,13 @@ type
     GroupBox3: TGroupBox;
     GroupBox4: TGroupBox;
     Image1: TImage;
+    RadioButton1: TRadioButton;
+    RadioButton2: TRadioButton;
+    RadioButton3: TRadioButton;
+    RadioButton4: TRadioButton;
+    RadioButton5: TRadioButton;
+    RadioButton6: TRadioButton;
+    RadioGroup1: TRadioGroup;
     Shape4: TImage;
     ImageList1: TImageList;
     Label1: TLabel;
@@ -62,6 +73,7 @@ type
     TabSheet1: TTabSheet;
     TabSheet2: TTabSheet;
     TabSheet3: TTabSheet;
+    TabSheet4: TTabSheet;
     ToggleBox1: TToggleBox;
     ToggleBox2: TToggleBox;
     TrackBar1: TTrackBar;
@@ -91,8 +103,12 @@ type
     ztrou: TEdit;
     ztrou1: TEdit;
     ztrou2: TEdit;
+    procedure Button2Click(Sender: TObject);
+    procedure Button3Click(Sender: TObject);
+    procedure Button9Click(Sender: TObject);
     procedure ButtonClick(Sender: TObject);
     procedure centerClick(Sender: TObject);   //center the shape
+    procedure check(Sender: TObject);
     procedure clearcanva(Sender: TObject);
     procedure close(Sender: TObject);
     procedure delClick(Sender: TObject);      //delete a hole
@@ -101,10 +117,13 @@ type
     procedure Image1Click(Sender: TObject);   //send to the site when clicking the logo
     procedure LazComRxData(Sender: TObject);
     procedure newfile(Sender: TObject);
+    procedure Panel1Click(Sender: TObject);
     procedure pickonscreen2(Sender: TObject); //pick 2 points on the shape to make a hole
+    procedure RadioButton6Change(Sender: TObject);
     procedure startpick(Sender: TObject);     //manage the pickonscreen2 procedure
     procedure TabSheet3Show(Sender: TObject);
     procedure Test(Sender: TObject);
+    procedure ToggleBox1Change(Sender: TObject);
     procedure ToggleBox1Click(Sender: TObject);
     procedure ToggleBox2Change(Sender: TObject);
     procedure validate(Sender: TObject);      //actualise the hole and the shape
@@ -133,7 +152,7 @@ type
        positionx: integer;
        positiony: integer;
        xhere, yhere, zhere: integer;
-
+       checkedvar: integer;
   end;
 
 
@@ -278,6 +297,12 @@ begin
            ytroufin1.enabled:=false;
            ztrou1.Enabled:=false;
 
+           xtrou1.text:=inttostr(0);
+           ytrou1.text:=inttostr(0);
+           xtroufin1.text:=inttostr(0);
+           ytroufin1.text:=inttostr(0);
+           ztrou1.text:=inttostr(0);
+
            new.enabled:=true;
            new.Top:= new.Top-30;
            ok.Top:=ok.Top-30;
@@ -286,6 +311,12 @@ begin
      end
      else
      begin
+        xtrou.text:=inttostr(0);
+        ytrou.text:=inttostr(0);
+        xtroufin.text:=inttostr(0);
+        ytroufin.text:=inttostr(0);
+        ztrou.text:=inttostr(0);
+
         xtrou.Enabled:=false;
         ytrou.enabled:=false;
         xtroufin.Enabled:=false;
@@ -382,6 +413,21 @@ begin
   trackbar2.position:=75 + 75 div 2;
 end;
 
+procedure TFrame2.check(Sender: TObject);
+begin
+  case (Sender as TCheckBox).Tag of
+    1: begin //test1
+         Checkedvar:=1;
+       end;
+    2: begin //test2
+         Checkedvar:=2;
+       end;
+    3: begin //test3
+         Checkedvar:=3;
+       end;
+    end;
+end;
+
 procedure TFrame2.clearcanva(Sender: TObject);
 begin
   Shape4.Canvas.Clear;
@@ -396,10 +442,12 @@ begin
   ToggleBox2.Enabled:=true;
   Button6.Enabled:=true;
   Button7.Enabled:=true;
-  Button8.Enabled:=false;
+  Button8.caption:='READY';
   xhere:=0;
   yhere:=0;
   zhere:=40;
+  lazcom.WriteData('r');
+  lazcom.WriteData(',');
 end;
 
 
@@ -408,7 +456,8 @@ var
   dx, dy, dz: integer;
 begin
   // Determine the direction of the line based on the button that was clicked
-
+  Panel2.Visible:=true;
+  Button9.Enabled:=false;
   case (Sender as TButton).Tag of
     1: begin // Up
          dx := 0;
@@ -469,6 +518,72 @@ begin
   positiononz.Text:=inttostr(zhere);
 end;
 
+procedure TFrame2.Button2Click(Sender: TObject);
+begin
+  lazcom.WriteData('z');
+  lazcom.WriteData(',');
+  lazcom.WriteData('5');
+  lazcom.WriteData(',');
+end;
+
+procedure TFrame2.Button3Click(Sender: TObject);
+begin
+  lazcom.WriteData('z');
+  lazcom.WriteData(',');
+  lazcom.WriteData('-5');
+  lazcom.WriteData(',');
+end;
+
+procedure TFrame2.Button9Click(Sender: TObject);
+var
+  text: String;
+  i: Integer;
+begin
+  Panel2.Visible:=true;
+  Button9.enabled:=false;
+  if (RadioButton1.Checked=true) then
+  begin
+     lazcom.WriteData('t1');
+     lazcom.WriteData(',');
+  end;
+  if (RadioButton2.Checked=true) then
+  begin
+     lazcom.WriteData('t2');
+     lazcom.WriteData(',');
+  end;
+  if (RadioButton3.Checked=true) then
+  begin
+     lazcom.WriteData('t3');
+     lazcom.WriteData(',');
+  end;
+  if (Radiobutton4.Checked=true) then
+  begin
+     lazcom.WriteData('t4');
+     lazcom.WriteData(',');
+  end;
+  if (RadioButton3.Checked=true) then
+  begin
+     lazcom.WriteData('t5');
+     lazcom.WriteData(',');
+  end;
+  if (RadioButton6.Checked=true) then
+  begin
+     lazcom.WriteData('t');
+     lazcom.WriteData(',');
+     text := edit3.Text;
+      for i := 1 to Length(text) do
+      begin
+        if (text[i] >= 'a') and (text[i] <= 'z') then
+          lazcom.WriteData(IntToStr(Ord(text[i]) - Ord('a') + 1))
+        else if (text[i] >= '0') and (text[i] <= '9') then
+          lazcom.WriteData(IntToStr(Ord(text[i]) - Ord('0') + 27))
+        else
+          lazcom.WriteData('');
+        lazcom.WriteData(',');
+      end;
+  end;
+end;
+
 
 procedure TFrame2.close(Sender: TObject);
 begin
@@ -488,6 +603,8 @@ var
 begin
    if LazCom.DataAvailable then
    begin
+       Button9.enabled:=true;
+       Panel2.Visible:=false;
        Temp := LazCom.ReadData ;
        Memo2.text := Memo2.text+Temp;
        //Memo2.Lines.Add('');
@@ -521,10 +638,20 @@ begin
    validate(sender);
 end;
 
+procedure TFrame2.Panel1Click(Sender: TObject);
+begin
+
+end;
+
 procedure TFrame2.pickonscreen2(Sender: TObject);
 begin
    GetCursorPos(CursorPos);
    onetime:=onetime+1;
+end;
+
+procedure TFrame2.RadioButton6Change(Sender: TObject);
+begin
+  edit3.enabled:=radiobutton6.Checked;
 end;
 
 procedure TFrame2.startpick(Sender: TObject);
@@ -541,14 +668,14 @@ begin
         GetCursorPos(CursorPos);
         xpos:= CursorPos.X;
         ypos:= CursorPos.Y;
-        xtrou.Text:=inttostr(xpos div 2 - shape1.Left div 2 - Groupbox2.Left div 2 - 5);
-        ytrou.Text:=inttostr(ypos div 2 - shape1.Top div 2 - Groupbox2.Top div 2 - 33);
+        xtrou.Text:=inttostr(xpos div 2 - shape1.Left div 2 - Groupbox2.Left div 2);
+        ytrou.Text:=inttostr((ypos div 2 - shape1.Top div 2 - Groupbox2.Top div 2)-33);
         validate(Sender);
    end;
    xpos:= CursorPos.X;
    ypos:= CursorPos.Y;
    xtrou.Text:=inttostr(xpos div 2 - shape1.Left div 2 - Groupbox2.Left div 2 - 5);
-   ytrou.Text:=inttostr(ypos div 2 - shape1.Top div 2 - Groupbox2.Top div 2 - 33);
+   ytrou.Text:=inttostr((ypos div 2 - shape1.Top div 2 - Groupbox2.Top div 2) - 33);
    placed:=1;
    while(onetime=1)do
    begin
@@ -557,14 +684,14 @@ begin
         xpos:= CursorPos.X;
         ypos:= CursorPos.Y;
         xtroufin.Text:=inttostr(xpos div 2 - shape1.Left div 2 - Groupbox2.Left div 2 - 5 - strtoint(xtrou.Text));
-        ytroufin.Text:=inttostr(ypos div 2 - shape1.Top div 2 - Groupbox2.Top div 2 - 33 - strtoint(ytrou.text));
+        ytroufin.Text:=inttostr((ypos div 2 - shape1.Top div 2 - Groupbox2.Top div 2 -55 -strtoint(ytrou.text)));
         validate(Sender);
    end;
    begin
           xpos:= CursorPos.X;
           ypos:= CursorPos.Y;
           xtroufin.Text:=inttostr(xpos div 2 - shape1.Left div 2 - Groupbox2.Left div 2 - 5 - strtoint(xtrou.Text));
-          ytroufin.Text:=inttostr(ypos div 2 - shape1.Top div 2 - Groupbox2.Top div 2 - 33 - strtoint(ytrou.text));
+          ytroufin.Text:=inttostr(ypos div 2 - shape1.Top div 2 - Groupbox2.Top div 2 -55- strtoint(ytrou.text));
           placed:=2;
    end;
   end;
@@ -629,24 +756,53 @@ end;
 
 procedure TFrame2.Test(Sender: TObject);
 begin
-  Shape4.Canvas.Pen.Width:=5;
-  Shape4.Canvas.pen.Color:=clWhite;
-  Shape4.Canvas.Rectangle(0,0,Shape4.Width,Shape4.Height);
-  Shape4.Canvas.pen.Color:=clBlack;
-  Button2.Enabled:=true;
-  Button3.Enabled:=true;
-  Button4.Enabled:=true;
-  Button5.Enabled:=true;
-  ToggleBox2.Enabled:=true;
-  Button6.Enabled:=true;
-  Button7.Enabled:=true;
-  Button8.Enabled:=false;
-  xhere:=0;
-  yhere:=0;
-  zhere:=40;
-  lazcom.ShowSetupDialog;
-  lazcom.Active:=true;
-  Lazcom.Open;
+ if Button8.caption='READY' then
+ begin
+    Button9.enabled:=true;
+    Shape4.Canvas.Pen.Width:=5;
+    Shape4.Canvas.pen.Color:=clWhite;
+    Shape4.Canvas.Rectangle(0,0,Shape4.Width,Shape4.Height);
+    Shape4.Canvas.pen.Color:=clBlack;
+    Button2.Enabled:=true;
+    Button3.Enabled:=true;
+    Button4.Enabled:=true;
+    Button5.Enabled:=true;
+    ToggleBox2.Enabled:=true;
+    Button6.Enabled:=true;
+    Button7.Enabled:=true;
+    Button8.Caption:='DISCONNECT';
+    xhere:=0;
+    yhere:=0;
+    zhere:=40;
+    lazcom.ShowSetupDialog;
+    lazcom.Active:=true;
+    Lazcom.Open;
+ end
+ else
+ begin
+    Shape4.Canvas.Pen.Width:=5;
+    Shape4.Canvas.pen.Color:=clWhite;
+    Shape4.Canvas.Rectangle(0,0,Shape4.Width,Shape4.Height);
+    Shape4.Canvas.pen.Color:=clBlack;
+    Button2.Enabled:=false;
+    Button3.Enabled:=false;
+    Button4.Enabled:=false;
+    Button5.Enabled:=false;
+    ToggleBox2.Enabled:=false;
+    Button6.Enabled:=false;
+    Button7.Enabled:=false;
+    Button8.Caption:='READY';
+    xhere:=0;
+    yhere:=0;
+    zhere:=40;
+    Lazcom.Close;
+    lazcom.Active:=false;
+ end;
+end;
+
+procedure TFrame2.ToggleBox1Change(Sender: TObject);
+begin
+
 end;
 
 
@@ -662,6 +818,8 @@ var
   filename: string;
   l: integer;
 begin
+  Panel2.Visible:=true;
+  button9.Enabled:=false;
   AllText := '';
  if OpenDialog1.execute then
  begin
@@ -692,9 +850,13 @@ begin
  if ToggleBox2.Checked = true then
  begin
   ONOFF.Text:='True';
+  lazcom.WriteData('i');
+  lazcom.WriteData(',');
  end
  else
   ONOFF.Text:='False';
+  lazcom.WriteData('o');
+  lazcom.WriteData(',');
 end;
 
 procedure TFrame2.xchange(Sender: TObject);
@@ -920,7 +1082,7 @@ begin
            MyText.SaveToFile(filename + '/' + Input + '.sti2d');
          end;
        finally
-         Free;
+         SelectDirectoryDialog1.Close;
        end;
 
   finally

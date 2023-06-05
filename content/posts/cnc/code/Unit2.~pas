@@ -1,0 +1,64 @@
+unit Unit2;
+
+interface
+
+uses 
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  StdCtrls, ExtCtrls;
+
+type
+  TFrame2 = class(TFrame)
+    GroupBox1: TGroupBox;
+    GroupBox2: TGroupBox;
+    Shape1: TShape;
+    Edit1: TEdit;
+    Edit2: TEdit;
+    X: TLabel;
+    Y: TLabel;
+    new: TButton;
+    procedure ychange(Sender: TObject);
+    procedure xchange(Sender: TObject);
+    procedure trou(Sender: TObject);
+  private
+    { Déclarations privées }
+  public
+    { Déclarations publiques }
+  end;
+
+implementation
+
+{$R *.dfm}
+
+procedure TFrame2.ychange(Sender: TObject);
+begin
+        if(Edit1.Text='') then
+        begin
+            Edit1.Text:=inttostr(0);
+        end;
+        if(strtoint(Edit2.Text)>150) then
+        begin
+            Edit2.Text:=inttostr(150);
+        end;
+        Shape1.Width:= strtoint(Edit2.Text);
+
+end;
+
+procedure TFrame2.xchange(Sender: TObject);
+begin
+        if(Edit1.Text='') then
+        begin
+            Edit1.Text:=inttostr(0);
+        end;
+        if(strtoint(Edit1.Text)>270) then
+        begin
+            Edit1.Text:=inttostr(270);
+        end;
+        Shape1.Height:= strtoint(Edit1.Text);
+end;
+
+procedure TFrame2.trou(Sender: TObject);
+begin
+       new.Top:= new.Top+30;
+end;
+
+end.

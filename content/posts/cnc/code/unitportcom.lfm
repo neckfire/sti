@@ -1,0 +1,167 @@
+object Form1: TForm1
+  Left = 919
+  Height = 456
+  Top = 121
+  Width = 410
+  Caption = 'Form1'
+  ClientHeight = 456
+  ClientWidth = 410
+  OnCreate = FormCreate
+  LCLVersion = '2.2.4.0'
+  object LabelportCOM: TLabel
+    Left = 32
+    Height = 18
+    Top = 32
+    Width = 67
+    Caption = 'Port COM :'
+    ParentColor = False
+  end
+  object CbPort: TComboBox
+    Left = 112
+    Height = 26
+    Top = 28
+    Width = 100
+    ItemHeight = 18
+    OnChange = CbPortChange
+    TabOrder = 0
+    Text = 'CbPort'
+  end
+  object BTNconnect: TButton
+    Left = 304
+    Height = 25
+    Top = 28
+    Width = 75
+    Caption = 'Connecter'
+    OnClick = BTNconnectClick
+    TabOrder = 1
+  end
+  object LabelportCOM1: TLabel
+    Left = 32
+    Height = 18
+    Top = 64
+    Width = 108
+    Caption = 'Port COM Status :'
+    ParentColor = False
+  end
+  object PortCOM1: TLabel
+    Left = 144
+    Height = 18
+    Top = 64
+    Width = 67
+    Caption = 'Port COM :'
+    ParentColor = False
+    OnClick = PortCOM1Click
+  end
+  object PortCOM2: TLabel
+    Left = 144
+    Height = 18
+    Top = 96
+    Width = 67
+    Caption = 'Port COM :'
+    ParentColor = False
+    OnClick = PortCOM1Click
+  end
+  object LabelportCOM2: TLabel
+    Left = 32
+    Height = 18
+    Top = 96
+    Width = 67
+    Caption = 'Port COM :'
+    ParentColor = False
+  end
+  object BTNrefresh: TButton
+    Left = 224
+    Height = 25
+    Top = 28
+    Width = 75
+    Caption = 'Refresh'
+    OnClick = BTNrefreshClick
+    TabOrder = 2
+  end
+  object Memo1: TMemo
+    Left = 32
+    Height = 266
+    Top = 160
+    Width = 347
+    ScrollBars = ssVertical
+    TabOrder = 3
+  end
+  object Button1: TButton
+    Left = 304
+    Height = 25
+    Top = 72
+    Width = 75
+    Caption = 'Button1'
+    OnClick = Button1Click
+    TabOrder = 4
+  end
+  object Button2: TButton
+    Left = 304
+    Height = 25
+    Top = 112
+    Width = 75
+    Caption = 'Button2'
+    OnClick = Button2Click
+    TabOrder = 5
+  end
+  object Button3: TButton
+    Left = 40
+    Height = 25
+    Top = 128
+    Width = 75
+    Caption = 'Button3'
+    OnClick = Button3Click
+    TabOrder = 6
+  end
+  object Label1: TLabel
+    Left = 144
+    Height = 18
+    Top = 128
+    Width = 41
+    Caption = 'Label1'
+    ParentColor = False
+  end
+  object LazCom: TLazSerial
+    Active = False
+    BaudRate = br__9600
+    DataBits = db8bits
+    Parity = pNone
+    FlowControl = fcNone
+    StopBits = sbOne
+    SynSer.Tag = 0
+    SynSer.Handle = -1
+    SynSer.RaiseExcept = False
+    SynSer.TestDSR = False
+    SynSer.TestCTS = False
+    SynSer.MaxLineLength = 0
+    SynSer.DeadlockTimeout = 30000
+    SynSer.LinuxLock = False
+    SynSer.ConvertLineEnd = False
+    SynSer.AtTimeout = 1000
+    SynSer.InterPacketTimeout = True
+    SynSer.NonBlock = False
+    Device = 'COM1'
+    RcvLineCRLF = False
+    OnRxData = LazComRxData
+    Left = 240
+    Top = 64
+  end
+  object Process1: TProcess
+    Active = False
+    CommandLine = 'featherpad'
+    Executable = 'featherpad'
+    Options = []
+    Priority = ppNormal
+    StartupOptions = []
+    ShowWindow = swoNone
+    WindowColumns = 0
+    WindowHeight = 0
+    WindowLeft = 0
+    WindowRows = 0
+    WindowTop = 0
+    WindowWidth = 0
+    FillAttribute = 0
+    Left = 232
+    Top = 120
+  end
+end
