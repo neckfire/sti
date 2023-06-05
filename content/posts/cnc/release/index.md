@@ -6,3 +6,4 @@ title: D. Telecharger le projet
 [![V3](https://www.vitabri.com/sites/default/files/styles/width_200/public/CONTENT/gamme/logo/logo-tente-pliante-v3_0.png?itok=qEw7A5ap)](https://mega.nz/file/SowDBaLB#tB1m7Lvt41FQ5fDdJJena2vMklNCbAHel7QBreboYQg)
 [V4](./PROJETCNCv4.zip)
 [V5](./projet%20cnc%20v5.tar.gz)
+[V6](./projet%20cnc%20v6.tar.xz)
